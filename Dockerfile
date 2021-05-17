@@ -1,4 +1,5 @@
-FROM nginx:1.18.0 AS base
+ARG NGINX_VERSION=1.18.0
+FROM nginx:$NGINX_VERSION AS base
 
 RUN	apt-get -yq update && \
 	apt-get install -yq --no-install-recommends libpcre3 zlib1g && \
@@ -20,9 +21,9 @@ RUN	buildDeps="build-essential \
 RUN	mkdir nginx-rtmp-module && \
 	curl -L https://api.github.com/repos/arut/nginx-rtmp-module/tarball/${NGINX_RTMP_MODULE_VERSION} | tar zx -C nginx-rtmp-module --strip=1
 
-RUN	curl -O https://nginx.org/download/nginx-1.18.0.tar.gz && \
-	tar zxf nginx-1.18.0.tar.gz && \
-	cd nginx-1.18.0 && \
+RUN	curl -O https://nginx.org/download/nginx-${NGINX_VERSION}.tar.gz && \
+	tar zxf nginx-${NGINX_VERSION}.tar.gz && \
+	cd nginx-${NGINX_VERSION} && \
 	./configure --with-compat --add-dynamic-module=../nginx-rtmp-module --with-cc-opt="-Wno-error=implicit-fallthrough" && \
 	make modules && \
 	cp objs/ngx_rtmp_module.so /etc/nginx/modules/
